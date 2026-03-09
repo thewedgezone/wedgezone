@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Wedgezone</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --dark: #1a3d32;
+    --mid: #2d6b54;
+    --light: #7ab89a;
+    --pale: #b8d9c8;
+    --bg: #f7f5f0;
+    --white: #ffffff;
+    --text: #1a2820;
+    --muted: #6b8c7d;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top:0; left:0; right:0;
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 60px;
+    background: rgba(247,245,240,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(26,61,50,0.08);
+    transition: all 0.3s;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none;
+  }
+  .logo-svg { width: 48px; height: 36px; }
+  .logo-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--dark); letter-spacing: -0.3px;
+  }
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 14px; font-weight: 500;
+    color: var(--muted); text-decoration: none;
+    letter-spacing: 0.3px;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--dark); }
+  .nav-cta {
+    background: var(--dark); color: var(--white) !important;
+    padding: 10px 24px; border-radius: 100px;
+    font-weight: 500 !important; font-size: 14px !important;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--mid) !important; color: var(--white) !important; }
+
+  /* PAGES */
+  .page { display: none; min-height: 100vh; padding-top: 80px; }
+  .page.active { display: block; }
+
+  /* ── HOME ── */
+  #home { padding-top: 0; }
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 120px 60px 80px;
+    position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 80% 50%, rgba(74,158,127,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 20% 80%, rgba(184,217,200,0.15) 0%, transparent 50%);
+  }
+  .hero-left { position: relative; z-index: 2; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(26,61,50,0.06); border: 1px solid rgba(26,61,50,0.12);
+    padding: 6px 16px; border-radius: 100px;
+    font-size: 12px; font-weight: 500; color: var(--mid);
+    letter-spacing: 0.8px; text-transform: uppercase;
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s ease both;
+  }
+  .hero-badge span { width:6px; height:6px; background: var(--light); border-radius: 50%; }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(48px, 6vw, 80px);
+    line-height: 1.05; font-weight: 700;
+    color: var(--dark); margin-bottom: 28px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero-title em { font-style: italic; color: var(--mid); }
+  .hero-sub {
+    font-size: 18px; line-height: 1.7;
+    color: var(--muted); max-width: 480px;
+    margin-bottom: 48px;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .hero-actions {
+    display: flex; gap: 16px; align-items: center;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .btn-primary {
+    background: var(--dark); color: var(--white);
+    padding: 16px 32px; border-radius: 100px;
+    font-size: 15px; font-weight: 500;
+    border: none; cursor: pointer;
+    transition: all 0.2s; text-decoration: none;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--mid); transform: translateY(-1px); }
+  .btn-secondary {
+    color: var(--dark); font-size: 15px; font-weight: 500;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none; cursor: pointer;
+    transition: gap 0.2s;
+  }
+  .btn-secondary:hover { gap: 12px; }
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+    animation: fadeIn 1s ease 0.4s both;
+  }
+  .hero-graphic {
+    width: 480px; height: 480px; position: relative;
+  }
+  .wedge-large {
+    position: absolute;
+    animation: float 6s ease-in-out infinite;
+  }
+  .wedge-large:nth-child(2) { animation-delay: -3s; }
+  .stats-strip {
+    padding: 60px;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 1px; background: rgba(26,61,50,0.1);
+    border-top: 1px solid rgba(26,61,50,0.1);
+    border-bottom: 1px solid rgba(26,61,50,0.1);
+  }
+  .stat {
+    background: var(--bg);
+    padding: 40px; text-align: center;
+  }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px; font-weight: 700; color: var(--dark);
+    line-height: 1;
+  }
+  .stat-label { font-size: 13px; color: var(--muted); margin-top: 8px; letter-spacing: 0.5px; }
+
+  .home-intro {
+    padding: 100px 60px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+  }
+  .section-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--light);
+    margin-bottom: 20px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 4vw, 52px); font-weight: 700;
+    color: var(--dark); line-height: 1.15; margin-bottom: 24px;
+  }
+  .section-body { font-size: 16px; line-height: 1.8; color: var(--muted); }
+
+  .feature-cards {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  }
+  .feature-card {
+    background: var(--white);
+    border: 1px solid rgba(26,61,50,0.08);
+    border-radius: 16px; padding: 32px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(26,61,50,0.08); }
+  .fc-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--pale), var(--light));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 20px;
+  }
+  .fc-title { font-size: 16px; font-weight: 600; color: var(--dark); margin-bottom: 10px; }
+  .fc-body { font-size: 14px; line-height: 1.7; color: var(--muted); }
+
+  /* Services preview */
+  .services-preview {
+    padding: 80px 60px;
+    background: var(--dark);
+  }
+  .services-preview .section-label { color: var(--light); }
+  .services-preview .section-title { color: var(--white); }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 2px;
+    margin-top: 60px;
+  }
+  .service-item {
+    background: rgba(255,255,255,0.04);
+    padding: 48px 40px;
+    border-left: 2px solid transparent;
+    transition: all 0.3s; cursor: pointer;
+  }
+  .service-item:hover {
+    background: rgba(255,255,255,0.08);
+    border-left-color: var(--light);
+  }
+  .si-num { font-family: 'Playfair Display', serif; font-size: 48px; color: rgba(255,255,255,0.08); font-weight: 700; }
+  .si-title { font-size: 20px; font-weight: 600; color: var(--white); margin: 16px 0 12px; }
+  .si-body { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.5); }
+
+  /* ── ABOUT ── */
+  #about .about-hero {
+    padding: 100px 60px 80px;
+    display: grid; grid-template-columns: 1.2fr 1fr; gap: 80px; align-items: center;
+  }
+  .about-visual {
+    position: relative; height: 520px;
+  }
+  .about-card {
+    position: absolute; border-radius: 20px; overflow: hidden;
+  }
+  .about-card-main {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 100%);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-card-overlay {
+    position: absolute; bottom: -20px; right: -20px;
+    width: 220px; height: 160px;
+    background: var(--white);
+    border: 1px solid rgba(26,61,50,0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    padding: 24px; border-radius: 16px;
+    display: flex; flex-direction: column; justify-content: space-between;
+  }
+  .mini-stat { }
+  .mini-stat-num { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--dark); }
+  .mini-stat-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  .values-section {
+    padding: 80px 60px;
+    background: var(--white);
+  }
+  .values-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 48px;
+    margin-top: 60px;
+  }
+  .value-item { }
+  .vi-line {
+    width: 40px; height: 3px;
+    background: linear-gradient(90deg, var(--mid), var(--light));
+    border-radius: 2px; margin-bottom: 24px;
+  }
+  .vi-title { font-size: 20px; font-weight: 600; color: var(--dark); margin-bottom: 12px; }
+  .vi-body { font-size: 14px; line-height: 1.8; color: var(--muted); }
+
+  .team-section { padding: 80px 60px; }
+  .team-grid {
+    display: grid; grid-template-columns: repeat(4,1fr); gap: 32px;
+    margin-top: 60px;
+  }
+  .team-card {
+    text-align: center;
+  }
+  .team-avatar {
+    width: 100%; aspect-ratio: 1;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--pale) 0%, var(--light) 100%);
+    margin-bottom: 20px; position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+  }
+  .team-name { font-size: 16px; font-weight: 600; color: var(--dark); margin-bottom: 6px; }
+  .team-role { font-size: 13px; color: var(--muted); }
+
+  /* ── SERVICES ── */
+  #services .services-hero {
+    padding: 100px 60px 60px;
+    text-align: center; max-width: 700px; margin: 0 auto;
+  }
+  .services-detailed {
+    padding: 60px;
+  }
+  .service-row {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; margin-bottom: 2px;
+    border: 1px solid rgba(26,61,50,0.08);
+    border-radius: 20px; overflow: hidden;
+    background: var(--white);
+    transition: box-shadow 0.3s;
+  }
+  .service-row:hover { box-shadow: 0 20px 60px rgba(26,61,50,0.08); }
+  .sr-content { padding: 60px; }
+  .sr-num { font-family: 'Playfair Display', serif; font-size: 72px; color: var(--pale); font-weight: 700; line-height: 1; margin-bottom: 24px; }
+  .sr-title { font-size: 28px; font-weight: 600; color: var(--dark); margin-bottom: 16px; }
+  .sr-body { font-size: 15px; line-height: 1.8; color: var(--muted); margin-bottom: 32px; }
+  .sr-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: rgba(26,61,50,0.06); color: var(--mid);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 12px; font-weight: 500;
+  }
+  .sr-visual {
+    background: linear-gradient(135deg, var(--dark) 0%, var(--mid) 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px; min-height: 300px;
+  }
+  .service-row:nth-child(even) .sr-content { order: 2; }
+  .service-row:nth-child(even) .sr-visual { order: 1; }
+
+  /* ── PORTFOLIO ── */
+  #portfolio .portfolio-hero {
+    padding: 100px 60px 60px;
+    display: flex; justify-content: space-between; align-items: flex-end;
+  }
+  .filter-tabs {
+    display: flex; gap: 8px;
+  }
+  .filter-tab {
+    padding: 10px 20px; border-radius: 100px;
+    border: 1px solid rgba(26,61,50,0.15);
+    font-size: 13px; font-weight: 500; color: var(--muted);
+    cursor: pointer; transition: all 0.2s;
+    background: transparent;
+  }
+  .filter-tab.active, .filter-tab:hover {
+    background: var(--dark); color: var(--white);
+    border-color: var(--dark);
+  }
+  .portfolio-grid {
+    padding: 0 60px 80px;
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+  }
+  .portfolio-card {
+    border-radius: 20px; overflow: hidden;
+    background: var(--white);
+    border: 1px solid rgba(26,61,50,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  .portfolio-card:hover { transform: translateY(-6px); box-shadow: 0 30px 80px rgba(26,61,50,0.12); }
+  .pc-thumb {
+    height: 220px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 60px;
+  }
+  .pc-thumb.g1 { background: linear-gradient(135deg, #1a3d32, #2d6b54); }
+  .pc-thumb.g2 { background: linear-gradient(135deg, #2d6b54, #7ab89a); }
+  .pc-thumb.g3 { background: linear-gradient(135deg, #7ab89a, #b8d9c8); }
+  .pc-thumb.g4 { background: linear-gradient(135deg, #1a3d32, #7ab89a); }
+  .pc-thumb.g5 { background: linear-gradient(135deg, #b8d9c8, #2d6b54); }
+  .pc-thumb.g6 { background: linear-gradient(135deg, #4a9e7f, #1a3d32); }
+  .pc-info { padding: 28px; }
+  .pc-cat { font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--light); margin-bottom: 8px; }
+  .pc-title { font-size: 18px; font-weight: 600; color: var(--dark); margin-bottom: 8px; }
+  .pc-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+  /* ── CONTACT ── */
+  #contact .contact-hero {
+    padding: 100px 60px 0;
+    text-align: center; max-width: 600px; margin: 0 auto;
+  }
+  .contact-body {
+    padding: 60px;
+    display: grid; grid-template-columns: 1fr 1.4fr; gap: 60px;
+  }
+  .contact-info { }
+  .ci-item {
+    display: flex; gap: 20px; align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  .ci-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(26,61,50,0.06);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .ci-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--light); margin-bottom: 6px; }
+  .ci-value { font-size: 15px; font-weight: 500; color: var(--dark); }
+
+  .contact-form {
+    background: var(--white); border-radius: 24px;
+    border: 1px solid rgba(26,61,50,0.08);
+    padding: 48px;
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { margin-bottom: 24px; }
+  .form-group label {
+    display: block; font-size: 12px; font-weight: 600;
+    letter-spacing: 0.5px; color: var(--muted);
+    margin-bottom: 8px; text-transform: uppercase;
+  }
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--bg);
+    border: 1px solid rgba(26,61,50,0.12);
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    border-color: var(--mid);
+  }
+  .form-group textarea { resize: vertical; min-height: 120px; }
+  .form-submit {
+    width: 100%;
+    background: var(--dark); color: var(--white);
+    padding: 16px; border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px; font-weight: 600;
+    border: none; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .form-submit:hover { background: var(--mid); }
+
+  /* FOOTER */
+  footer {
+    background: var(--dark); color: var(--white);
+    padding: 80px 60px 40px;
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 60px; margin-bottom: 60px;
+  }
+  .footer-brand p {
+    font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.5);
+    margin-top: 20px; max-width: 280px;
+  }
+  .footer-col h4 {
+    font-size: 12px; font-weight: 600; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--light);
+    margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 12px; }
+  .footer-col a {
+    font-size: 14px; color: rgba(255,255,255,0.5);
+    text-decoration: none; transition: color 0.2s;
+    cursor: pointer;
+  }
+  .footer-col a:hover { color: var(--white); }
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 32px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: 13px; color: rgba(255,255,255,0.3); }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(24px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity:0; }
+    to { opacity:1; }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(3deg); }
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    nav { padding: 16px 32px; }
+    .hero { grid-template-columns: 1fr; padding: 120px 32px 60px; }
+    .hero-right { display: none; }
+    .stats-strip { grid-template-columns: repeat(2,1fr); padding: 40px 32px; }
+    .home-intro { grid-template-columns: 1fr; padding: 60px 32px; gap: 40px; }
+    .services-preview { padding: 60px 32px; }
+    .services-grid { grid-template-columns: 1fr; }
+    #about .about-hero { grid-template-columns: 1fr; padding: 60px 32px; }
+    .about-visual { display: none; }
+    .values-grid { grid-template-columns: 1fr; padding: 0 32px; }
+    .team-grid { grid-template-columns: repeat(2,1fr); }
+    .services-detailed { padding: 32px; }
+    .service-row { grid-template-columns: 1fr; }
+    .sr-visual { display: none; }
+    .portfolio-grid { grid-template-columns: 1fr 1fr; padding: 0 32px 60px; }
+    .contact-body { grid-template-columns: 1fr; padding: 32px; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a class="nav-logo" onclick="showPage('home')">
+    <svg class="logo-svg" viewBox="0 0 60 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="0,0 22,44 28,44 6,0" fill="#9ecdb9" opacity="0.8"/>
+      <polygon points="10,0 32,44 38,44 16,0" fill="#b8d9c8" opacity="0.6"/>
+      <polygon points="28,0 44,38 60,0" fill="#1a3d32"/>
+    </svg>
+    <span class="logo-text">Wedgezone</span>
+  </a>
+  <ul class="nav-links">
+    <li><a onclick="showPage('home')" id="nav-home" class="active">Home</a></li>
+    <li><a onclick="showPage('about')" id="nav-about">About</a></li>
+    <li><a onclick="showPage('services')" id="nav-services">Services</a></li>
+    <li><a onclick="showPage('portfolio')" id="nav-portfolio">Work</a></li>
+    <li><a onclick="showPage('contact')" id="nav-contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════ HOME PAGE ══════════════ -->
+<div id="home" class="page active">
+
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-left">
+      <div class="hero-badge"><span></span> Shaping Ideas Into Reality</div>
+      <h1 class="hero-title">Design that<br><em>moves</em> the<br>world forward</h1>
+      <p class="hero-sub">Wedgezone crafts precise, purposeful solutions that give your brand a competitive edge — where strategy meets form.</p>
+      <div class="hero-actions">
+        <a class="btn-primary" onclick="showPage('services')">Explore Services</a>
+        <a class="btn-secondary" onclick="showPage('portfolio')">View Our Work →</a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-graphic">
+        <svg width="480" height="480" viewBox="0 0 480 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Large pale wedge -->
+          <g class="wedge-large" style="transform-origin: 160px 280px">
+            <polygon points="60,80 260,320 160,320" fill="#b8d9c8" opacity="0.4"/>
+            <polygon points="60,80 160,320 80,180" fill="#9ecdb9" opacity="0.3"/>
+          </g>
+          <!-- Dark wedge -->
+          <g class="wedge-large" style="transform-origin: 310px 260px; animation-delay:-3s">
+            <polygon points="220,40 400,340 310,340" fill="#1a3d32" opacity="0.85"/>
+            <polygon points="220,40 310,340 240,180" fill="#2d6b54" opacity="0.6"/>
+          </g>
+          <!-- Accent circles -->
+          <circle cx="380" cy="100" r="40" fill="#7ab89a" opacity="0.15"/>
+          <circle cx="100" cy="380" r="60" fill="#b8d9c8" opacity="0.12"/>
+          <circle cx="240" cy="240" r="8" fill="#2d6b54" opacity="0.3"/>
+          <circle cx="350" cy="380" r="12" fill="#7ab89a" opacity="0.25"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <div class="stats-strip">
+    <div class="stat"><div class="stat-num">180+</div><div class="stat-label">Projects Delivered</div></div>
+    <div class="stat"><div class="stat-num">12</div><div class="stat-label">Years of Experience</div></div>
+    <div class="stat"><div class="stat-num">95%</div><div class="stat-label">Client Retention</div></div>
+    <div class="stat"><div class="stat-num">40+</div><div class="stat-label">Team Members</div></div>
+  </div>
+
+  <section class="home-intro">
+    <div>
+      <div class="section-label">Who We Are</div>
+      <h2 class="section-title">Built on precision,<br>driven by purpose</h2>
+      <p class="section-body">Wedgezone is a multidisciplinary design and strategy firm. We work at the intersection of brand identity, digital experience, and business strategy — creating work that is both beautiful and effective.</p>
+      <br/>
+      <p class="section-body">Every project begins with deep listening, ends with sharp execution, and is shaped by an unwavering commitment to craft.</p>
+    </div>
+    <div class="feature-cards">
+      <div class="feature-card">
+        <div class="fc-icon">🎯</div>
+        <div class="fc-title">Strategic Thinking</div>
+        <div class="fc-body">We align design decisions with your business objectives for measurable impact.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">✦</div>
+        <div class="fc-title">Refined Craft</div>
+        <div class="fc-body">Every pixel, word, and interaction is considered and intentional.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">🌿</div>
+        <div class="fc-title">Sustainable Design</div>
+        <div class="fc-body">We build systems and brands that grow with your organization.</div>
+      </div>
+      <div class="feature-card">
+        <div class="fc-icon">⚡</div>
+        <div class="fc-title">Swift Execution</div>
+        <div class="fc-body">Agile processes that deliver quality without compromising timelines.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="services-preview">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title" style="color:var(--white)">Our core capabilities</h2>
+    <div class="services-grid">
+      <div class="service-item" onclick="showPage('services')">
+        <div class="si-num">01</div>
+        <div class="si-title">Brand Strategy & Identity</div>
+        <div class="si-body">Comprehensive brand systems from positioning to visual language — built to last.</div>
+      </div>
+      <div class="service-item" onclick="showPage('services')">
+        <div class="si-num">02</div>
+        <div class="si-title">Digital Experience Design</div>
+        <div class="si-body">Web and app experiences that balance aesthetics with seamless usability.</div>
+      </div>
+      <div class="service-item" onclick="showPage('services')">
+        <div class="si-num">03</div>
+        <div class="si-title">Consulting & Growth</div>
+        <div class="si-body">Strategic guidance that connects creative vision to business performance.</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════════ ABOUT PAGE ══════════════ -->
+<div id="about" class="page">
+
+  <section class="about-hero">
+    <div class="about-visual">
+      <div class="about-card about-card-main">
+        <svg width="280" height="280" viewBox="0 0 280 280" fill="none">
+          <polygon points="40,40 160,220 80,220" fill="rgba(255,255,255,0.1)"/>
+          <polygon points="120,20 220,200 160,200" fill="rgba(255,255,255,0.15)"/>
+          <circle cx="200" cy="80" r="30" fill="rgba(255,255,255,0.06)"/>
+        </svg>
+      </div>
+      <div class="about-card-overlay">
+        <div class="mini-stat">
+          <div class="mini-stat-num">12+</div>
+          <div class="mini-stat-label">Years shaping brands</div>
+        </div>
+        <div class="mini-stat">
+          <div class="mini-stat-num">180+</div>
+          <div class="mini-stat-label">Projects completed</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-label">Our Story</div>
+      <h2 class="section-title">We started with a simple belief: design should cut through noise</h2>
+      <p class="section-body" style="margin-bottom:20px">Founded in 2012, Wedgezone was born from the conviction that great design isn't just how something looks — it's how it works, how it feels, and what it says about who you are.</p>
+      <p class="section-body">We've grown from a two-person studio into a team of 40+ strategists, designers, and technologists. Our work spans global brands and ambitious startups — all united by a shared obsession with doing things well.</p>
+    </div>
+  </section>
+
+  <section class="values-section">
+    <div style="padding: 0 0 0 0; text-align: center;">
+      <div class="section-label" style="text-align:center">What We Stand For</div>
+      <h2 class="section-title" style="text-align:center">Our values</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Honesty First</div>
+        <div class="vi-body">We tell clients what they need to hear, not what they want to hear. Honest partnerships produce better work.</div>
+      </div>
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Craft Over Speed</div>
+        <div class="vi-body">We move deliberately. We take the time required to do something right, because shortcuts show.</div>
+      </div>
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Impact That Lasts</div>
+        <div class="vi-body">We design for longevity — systems and strategies that continue to deliver value long after launch.</div>
+      </div>
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Curiosity Always</div>
+        <div class="vi-body">We stay students of our craft, constantly exploring new methods, perspectives, and possibilities.</div>
+      </div>
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Collaboration Deeply</div>
+        <div class="vi-body">The best outcomes emerge from genuine partnership with our clients, built on trust and open dialogue.</div>
+      </div>
+      <div class="value-item">
+        <div class="vi-line"></div>
+        <div class="vi-title">Responsible Growth</div>
+        <div class="vi-body">We consider the broader impact of our work — on communities, environments, and the future.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="team-section">
+    <div class="section-label">The People</div>
+    <h2 class="section-title">Meet our team</h2>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="team-avatar">👤</div>
+        <div class="team-name">Arjun Sharma</div>
+        <div class="team-role">Founder & CEO</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg,#2d6b54,#1a3d32)">👤</div>
+        <div class="team-name">Meera Nair</div>
+        <div class="team-role">Creative Director</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg,#7ab89a,#2d6b54)">👤</div>
+        <div class="team-name">Rahul Patel</div>
+        <div class="team-role">Head of Strategy</div>
+      </div>
+      <div class="team-card">
+        <div class="team-avatar" style="background: linear-gradient(135deg,#1a3d32,#7ab89a)">👤</div>
+        <div class="team-name">Priya Iyer</div>
+        <div class="team-role">Lead UX Designer</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ══════════════ SERVICES PAGE ══════════════ -->
+<div id="services" class="page">
+
+  <section id="services" class="services-hero">
+    <div class="section-label">What We Offer</div>
+    <h1 class="section-title">Services built around your goals</h1>
+    <p class="section-body">From brand identity to digital products, we offer end-to-end creative and strategic services that drive real results.</p>
+  </section>
+
+  <div class="services-detailed">
+    <div class="service-row">
+      <div class="sr-content">
+        <div class="sr-num">01</div>
+        <div class="sr-title">Brand Strategy & Identity</div>
+        <div class="sr-body">We craft brand systems from the ground up — starting with positioning, moving through narrative, and arriving at a complete visual language. Your brand will be distinctive, coherent, and built to endure competitive markets.</div>
+        <div class="sr-tags">
+          <span class="tag">Brand Positioning</span>
+          <span class="tag">Logo Design</span>
+          <span class="tag">Visual Identity</span>
+          <span class="tag">Brand Guidelines</span>
+          <span class="tag">Tone of Voice</span>
+        </div>
+      </div>
+      <div class="sr-visual">🎨</div>
+    </div>
+
+    <div class="service-row" style="margin-top:24px">
+      <div class="sr-content">
+        <div class="sr-num">02</div>
+        <div class="sr-title">Digital Experience Design</div>
+        <div class="sr-body">We design digital products — websites, apps, and platforms — that people genuinely enjoy using. Every interaction is considered, every flow optimized, and every interface crafted to reflect your brand at its best.</div>
+        <div class="sr-tags">
+          <span class="tag">UX Research</span>
+          <span class="tag">UI Design</span>
+          <span class="tag">Web Design</span>
+          <span class="tag">Prototyping</span>
+          <span class="tag">Design Systems</span>
+        </div>
+      </div>
+      <div class="sr-visual">💻</div>
+    </div>
+
+    <div class="service-row" style="margin-top:24px">
+      <div class="sr-content">
+        <div class="sr-num">03</div>
+        <div class="sr-title">Marketing & Communications</div>
+        <div class="sr-body">Campaigns, content, and communications that connect. We help brands tell their stories with clarity and conviction — across every channel, touchpoint, and medium.</div>
+        <div class="sr-tags">
+          <span class="tag">Campaign Design</span>
+          <span class="tag">Content Strategy</span>
+          <span class="tag">Copywriting</span>
+          <span class="tag">Social Media</span>
+          <span class="tag">Print & Packaging</span>
+        </div>
+      </div>
+      <div class="sr-visual">📣</div>
+    </div>
+
+    <div class="service-row" style="margin-top:24px">
+      <div class="sr-content">
+        <div class="sr-num">04</div>
+        <div class="sr-title">Strategy & Business Consulting</div>
+        <div class="sr-body">We bridge the gap between creative ambition and business reality. Our consultants work alongside your leadership to develop strategies that align your brand, operations, and growth objectives.</div>
+        <div class="sr-tags">
+          <span class="tag">Growth Strategy</span>
+          <span class="tag">Market Research</span>
+          <span class="tag">Brand Audits</span>
+          <span class="tag">Workshops</span>
+          <span class="tag">Roadmapping</span>
+        </div>
+      </div>
+      <div class="sr-visual">📊</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ PORTFOLIO PAGE ══════════════ -->
+<div id="portfolio" class="page">
+
+  <section class="portfolio-hero">
+    <div>
+      <div class="section-label">Our Work</div>
+      <h1 class="section-title">Selected projects</h1>
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active">All</button>
+      <button class="filter-tab">Branding</button>
+      <button class="filter-tab">Digital</button>
+      <button class="filter-tab">Strategy</button>
+    </div>
+  </section>
+
+  <div class="portfolio-grid">
+    <div class="portfolio-card">
+      <div class="pc-thumb g1">🏢</div>
+      <div class="pc-info">
+        <div class="pc-cat">Branding</div>
+        <div class="pc-title">Verdant Financial</div>
+        <div class="pc-desc">Complete brand identity and visual system for a sustainable investment firm entering the market.</div>
+      </div>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-thumb g2">📱</div>
+      <div class="pc-info">
+        <div class="pc-cat">Digital</div>
+        <div class="pc-title">Kova Health App</div>
+        <div class="pc-desc">End-to-end UX/UI design for a wellness platform serving 200,000+ monthly active users.</div>
+      </div>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-thumb g3">🌍</div>
+      <div class="pc-info">
+        <div class="pc-cat">Strategy</div>
+        <div class="pc-title">Mira NGO Rebrand</div>
+        <div class="pc-desc">Strategic repositioning and new brand identity for an international humanitarian organization.</div>
+      </div>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-thumb g4">🛍</div>
+      <div class="pc-info">
+        <div class="pc-cat">Branding + Digital</div>
+        <div class="pc-title">Luma Retail</div>
+        <div class="pc-desc">Brand identity and e-commerce design system for a premium lifestyle retail brand launch.</div>
+      </div>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-thumb g5">⚡</div>
+      <div class="pc-info">
+        <div class="pc-cat">Digital</div>
+        <div class="pc-title">Stride SaaS Platform</div>
+        <div class="pc-desc">Design system and product UI for a B2B workflow automation platform used by Fortune 500 clients.</div>
+      </div>
+    </div>
+    <div class="portfolio-card">
+      <div class="pc-thumb g6">🎓</div>
+      <div class="pc-info">
+        <div class="pc-cat">Strategy + Branding</div>
+        <div class="pc-title">Nexus EdTech</div>
+        <div class="pc-desc">Full brand strategy, identity, and digital presence for an edtech startup raising Series A.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══════════════ CONTACT PAGE ══════════════ -->
+<div id="contact" class="page">
+
+  <section class="contact-hero">
+    <div class="section-label">Get In Touch</div>
+    <h1 class="section-title">Let's build something great together</h1>
+    <p class="section-body" style="max-width:480px; margin: 0 auto 16px">Tell us about your project. We'll respond within 24 hours with our thoughts and next steps.</p>
+  </section>
+
+  <div class="contact-body">
+    <div class="contact-info">
+      <div class="ci-item">
+        <div class="ci-icon">📍</div>
+        <div>
+          <div class="ci-label">Office</div>
+          <div class="ci-value">12 Greens Avenue, Koramangala<br>Bangalore, Karnataka 560034</div>
+        </div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">📧</div>
+        <div>
+          <div class="ci-label">Email</div>
+          <div class="ci-value"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2f474a4343406f584a4b484a5c014c40">[email&#160;protected]</a></div>
+        </div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">📞</div>
+        <div>
+          <div class="ci-label">Phone</div>
+          <div class="ci-value">+91 98400 12345</div>
+        </div>
+      </div>
+      <div class="ci-item">
+        <div class="ci-icon">🕐</div>
+        <div>
+          <div class="ci-label">Working Hours</div>
+          <div class="ci-value">Mon – Fri, 9:00 AM – 6:30 PM IST</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-form">
+      <h3 style="font-family:'Playfair Display',serif; font-size:24px; color:var(--dark); margin-bottom:32px">Send us a message</h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name</label>
+          <input type="text" placeholder="Your first name"/>
+        </div>
+        <div class="form-group">
+          <label>Last Name</label>
+          <input type="text" placeholder="Your last name"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@example.com"/>
+      </div>
+      <div class="form-group">
+        <label>Service of Interest</label>
+        <select>
+          <option value="">Select a service…</option>
+          <option>Brand Strategy & Identity</option>
+          <option>Digital Experience Design</option>
+          <option>Marketing & Communications</option>
+          <option>Strategy & Business Consulting</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Message</label>
+        <textarea placeholder="Tell us about your project, timeline, and goals…"></textarea>
+      </div>
+      <button class="form-submit" onclick="handleSubmit(event)">Send Message →</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div style="display:flex; align-items:center; gap:10px">
+        <svg width="44" height="32" viewBox="0 0 60 44" fill="none">
+          <polygon points="0,0 22,44 28,44 6,0" fill="#9ecdb9" opacity="0.8"/>
+          <polygon points="10,0 32,44 38,44 16,0" fill="#b8d9c8" opacity="0.6"/>
+          <polygon points="28,0 44,38 60,0" fill="white" opacity="0.9"/>
+        </svg>
+        <span style="font-size:20px; font-weight:600; color:white">Wedgezone</span>
+      </div>
+      <p>Shaping brands and digital experiences with precision and purpose since 2012.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a onclick="showPage('about')">About Us</a></li>
+        <li><a onclick="showPage('portfolio')">Our Work</a></li>
+        <li><a>Careers</a></li>
+        <li><a>Press</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a onclick="showPage('services')">Brand Identity</a></li>
+        <li><a onclick="showPage('services')">Digital Design</a></li>
+        <li><a onclick="showPage('services')">Marketing</a></li>
+        <li><a onclick="showPage('services')">Consulting</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <ul>
+        <li><a>LinkedIn</a></li>
+        <li><a>Instagram</a></li>
+        <li><a>Dribbble</a></li>
+        <li><a onclick="showPage('contact')">Contact</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Wedgezone. All rights reserved.</p>
+    <p>Privacy Policy · Terms of Use</p>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    const navEl = document.getElementById('nav-' + id);
+    if (navEl) navEl.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    const btn = e.target;
+  
